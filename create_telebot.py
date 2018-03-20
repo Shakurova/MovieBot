@@ -23,9 +23,15 @@ def is_goodbye(message):
 def is_ask_score(message):
     return matches(message, phrases.their_ask_score)
 
-# TODO - bug: "w*hi*ch grade are you in?" matches "hi"
 def matches(message, messages):
-    return any(True for g in messages if message.text.lower() in g.lower() or g.lower() in message.text.lower())
+    split_message = message.text.split(" ")
+    contains = False
+    for sm in split_message:
+        formatted = sm.lower().strip()
+        if any(True for g in messages if formatted == g.lower()):
+            contains = True
+            break
+    return contains
 
 @bot.message_handler(func=is_greeting, content_types=['text'])
 def greeting(message):
