@@ -1,7 +1,0 @@
-their_greetings = ["hi", "hello", "good morning"]
-my_greetings = ["Hi!", "Hello!", "Good morning!"]
-their_goodbyes = ["goodbye", "bye", "good-bye", "see you later", "cya"]
-my_goodbyes = ["Goodbye!", "Bye!"]
-my_confusion = ["Can you rephrase that please?", "Sorry, I did not understand that query, could you rephrase?"]
-their_ask_score = ["score", "rating", "grade"]
-their_ask_recommendation = ["recommend"]
