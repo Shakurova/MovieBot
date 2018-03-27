@@ -7,10 +7,11 @@ Our chatbot can handle greetings and goodbyes and can give an introduction of it
 Our chatbot can manage three types of domain specific questions: give movie score, give review and recommend similar movie.
 
 # How it works?
-It uses amazon film dataset https://snap.stanford.edu/data/web-Movies.html and https://www.themoviedb.org API[https://www.themoviedb.org].
+It uses [Amazon movie reviews dataset](https://snap.stanford.edu/data/web-Movies.html) to get movies reviews and
+[MovieDb API](https://www.themoviedb.org) to get recommendations and movie ratings.
 
-The dataset contains movie id, reviewer id, reviewer profile name, review helpfulness and score metrics, review summary and review text.
-To map the movie name with movie id we wrote a crawler for amazon website.
+Amazon movie reviews dataset contains movie id, reviewer id, reviewer profile name, review helpfulness and score metrics, review summary and review text.
+To map the movie name with movie id we wrote a crawler for [amazon website](https://www.amazon.com/product-reviews/).
 
 ```
 their_greetings = ['hi', 'hello', 'good morning']
