@@ -6,7 +6,7 @@ from nltk.util import ngrams
 import editdistance
 
 
-def find_title(text, movie_names):
+def find_title(text, movie_names, movie_db):
 
     token = nltk.word_tokenize(text)
     ngrm = []
@@ -35,4 +35,4 @@ if __name__ == '__main__':
              'Can you recommend me something like Full House movie?']
 
     for text in input:
-        print(find_title(text, movie_names))
+        print(find_title(text, movie_names, movie_db))

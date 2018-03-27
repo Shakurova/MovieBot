@@ -1,0 +1,4 @@
+amazon_movies.txt
+*.gz
+amazon_movies.txt.gz
+*.json

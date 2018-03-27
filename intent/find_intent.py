@@ -4,6 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from intent import phrases
 
+
 class IntentFinder():
     def __init__(self, questions_answers, model=None):
         self.questions_answers = questions_answers
