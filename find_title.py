@@ -6,33 +6,38 @@ from nltk.util import ngrams
 import editdistance
 
 
-def find_title(text, movie_names, movie_db):
+def find_title(text, movie_names):
 
+    text = text.lower()
+
+    # Generate ngrams
     token = nltk.word_tokenize(text)
     ngrm = []
     for i in range(1, 5):
         for t in ngrams(token, i):
             ngrm.append(t)
 
-    # print('!!!', ngrm)
+    min = ('', 100)
     for ngr in ngrm:
-        if ' '.join(ngr) in movie_names:
-            return 'full', ' '.join(ngr), movie_db[' '.join(ngr)]
-        else:
-            for title in movie_names:
-                if editdistance.eval(' '.join(ngr), title) < len(title)/3:
-                    # print('-' * 10)
-                    # print(len(title))
-                    # print(title, ' '.join(ngr), editdistance.eval(' '.join(ngr), title))
-                    return 'lvnsht', ' '.join(ngr), movie_db[title]
+
+        for title in movie_names:
+            # print(title, ' '.join(ngr), editdistance.eval(' '.join(ngr), title))
+            if editdistance.eval(' '.join(ngr), title) < min[1] and editdistance.eval(' '.join(ngr), title) < len(title)/3:
+                min = (title, editdistance.eval(' '.join(ngr), title))  # the closes movie
+
+    if min[0] != '':
+        return min[0]
+    else:    # if nothing was found
+        return "Such a movie wasn't found"
+
 
 if __name__ == '__main__':
 
     movie_names = open('movie_names.txt', 'r').read().split('\n')
-    movie_db = ujson.load(open('nice_amazon2.json', 'r'))
-
-    input = ['Hi! Can you give me a review of Disappeared', 'Hi! Can you give me a review of Diasppeared', 'What was the score of La Bamba?', 'What was the score of Bamba?',
-             'Can you recommend me something like Full House movie?']
-
-    for text in input:
-        print(find_title(text, movie_names, movie_db))
+    # movie_db = ujson.load(open('../nice_amazon2_lower.json', 'r'))
+    #
+    # input = ['Hi! Can you give me a review of Disappeared', 'Hi! Can you give me a review of Diasppeared', 'What was the score of La Bamba?', 'What was the score of Bamba?',
+    #          'Can you recommend me something like Full House movie?']
+    #
+    # for text in input:
+    #     print(find_title(text, movie_names, movie_db))

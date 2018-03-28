@@ -26,6 +26,8 @@ their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 
 
 ## Intent detection
 
+Before we do text preprocessing, we remove stop words, punctuation marks and do lowercase.
+
 We predefined search queries for each of the intents and for each of user question we measure the **semantic distance between averaged word2vec vectors**.
 
 ## Movie title extraction

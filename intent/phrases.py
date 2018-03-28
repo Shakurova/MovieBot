@@ -19,7 +19,8 @@ questions_answers = [(their_greetings, my_greetings),
                      (their_review, my_review),
                      (their_howareyou, my_howareyou)]
 
-
 recommendation = ['Could you recommend me a movie similar to movie?', 'Do you have any suggestions for me?', 'Do you have any recommendations?',
                   'Can you advise me a movie?', 'I need your advice']
-review = ['What is the movie rating']
+score = ['What is the movie rating?', 'What is the movie score?', 'How was the movie scored?']
+review = ['What is your opinion on this movie?', 'What is your impression?', 'What do you think about the movie?',
+          'What is your point of view on this movie?', 'Can you give me a movie review?']

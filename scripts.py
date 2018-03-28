@@ -3,6 +3,7 @@
 import ujson
 
 dictionary = {}
+from normalization import normalize, movie_cleaner
 
 
 def create_dict(arr):
@@ -68,37 +69,56 @@ def amazon_parser(filename='amazon_movies.txt'):
 
 
 if __name__ == '__main__':
-    # arr = amazon_parser()
+    # # arr = amazon_parser()
+    #
+    # # Transform crawled data into a normal format
+    # results = ujson.load(open('results2.json'))
+    #
+    # lookup_dictionary = {}
+    # for l in results:
+    #     lookup_dictionary[l['event_url'].split('/')[-1]] = l['event_title'][0].split(': ')[2]
+    #
+    # with open('lookup_dictionary2.json', 'w') as w:
+    #     ujson.dump(lookup_dictionary, w)
+    #
+    # print('start with amazon')
+    # # transform amazon keys
+    # amazon = ujson.load(open('amazon2.json'))
+    # print(len(amazon.keys()))
+    #
+    # nice_amazon = {}
+    #
+    # for k in amazon:
+    #     if k in lookup_dictionary:
+    #         nice_amazon[lookup_dictionary[k]] = amazon[k]
+    #     else:
+    #         print(k)
+    #
+    # with open('nice_amazon2.json', 'w') as w:
+    #     ujson.dump(nice_amazon, w)
+    #
+    # nice_amazon2 = ujson.load(open('./intent/nice_amazon2.json'))
+    # print(len(nice_amazon2.keys()))
+    #
+    # # To lower case and clean movie names from () and []
+    # nice_amazon2_lower = {}
+    # for k in nice_amazon2:
+    #     # print(k, movie_cleaner(k).lower())
+    #     nice_amazon2_lower[movie_cleaner(k).lower()] = nice_amazon2[k]
+    #
+    # with open('nice_amazon2_lower.json', 'w') as w:
+    #     ujson.dump(nice_amazon2_lower, w)
+    #
+    # nice_amazon2_lower = ujson.load(open('nice_amazon2_lower.json'))
+    # for k in nice_amazon2_lower:
+    #     print(k)
 
-    # Transform crawled data into a normal format
-    results = ujson.load(open('results2.json'))
+    movie_names = open('./intent/movie_names.txt', 'r')
+    with open('movie_names_lower.txt', 'w') as w:
+        for line in movie_names:
+            w.write(movie_cleaner(line).lower())
 
-    lookup_dictionary = {}
-    for l in results:
-        lookup_dictionary[l['event_url'].split('/')[-1]] = l['event_title'][0].split(': ')[2]
 
-    with open('lookup_dictionary2.json', 'w') as w:
-        ujson.dump(lookup_dictionary, w)
 
-    print('start with amazon')
-    # transform amazon keys
-    amazon = ujson.load(open('amazon2.json'))
-    print(len(amazon.keys()))
 
-    nice_amazon = {}
-
-    for k in amazon:
-        if k in lookup_dictionary:
-            nice_amazon[lookup_dictionary[k]] = amazon[k]
-        else:
-            print(k)
-
-    with open('nice_amazon2.json', 'w') as w:
-        ujson.dump(nice_amazon, w)
-
-    nice_amazon2 = ujson.load(open('nice_amazon2.json'))
-    print(len(nice_amazon2.keys()))
-
-    for k in nice_amazon2:
-        print(k)
 

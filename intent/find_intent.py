@@ -3,6 +3,7 @@ import sys
 from sklearn.metrics.pairwise import cosine_similarity
 
 from intent import phrases
+from normalization import normalize
 
 
 class IntentFinder():
@@ -23,7 +24,7 @@ class IntentFinder():
         # We substract to make lower scores better, because other (distance) metrics work like that
         return len(text) - sum(text.count(m) for m in self.questions_answers[1])
 
-    def model_distance(self, message, treshold_distance = 0.8):
+    def model_distance(self, message, treshold_distance=0.8):
         message_vec = self.makeFeatureVec(message.split(), self.model, self.model.vector_size)
         best_score = sys.maxsize
         best_score_index = None
@@ -89,6 +90,3 @@ class IntentFinder():
             # Increment the counter
             counter = counter + 1
         return reviewFeatureVecs
-
-
-
