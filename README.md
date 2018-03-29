@@ -5,8 +5,9 @@ We developed a movie chatbot for Telegram. It can give you a movie score, review
 We used [Python Telegram bot API](https://github.com/python-telegram-bot/python-telegram-bot), code is written in Python 3.5.
 
 ## Chat bot abilities
-Our chatbot can handle greetings and goodbyes and can give an introduction of its abilities.
+Our chatbot can handle greetings and goodbyes and can give an introduction of its abilities. The bot lists its abilities with /info command.
 Our chatbot can manage three types of domain specific questions: give movie score, give a random review or recommend a similar movie.
+
 
 # How does it work?
 The chatbot uses [Amazon movie reviews dataset](https://snap.stanford.edu/data/web-Movies.html) to get movies reviews and
