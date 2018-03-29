@@ -13,7 +13,7 @@ class IntentFinder():
             their_greetings = ['hi', 'hello', 'good morning']
             their_goodbyes = ['goodbye', 'bye', 'good-bye', 'see you later', 'cya']
             their_score = ['score', 'rating', 'grade', 'average', 'socre', 'ratings', 'averge', 'avearge']
-            their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise','reccomend']
+            their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise','reccomend', 'similar']
             their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 'veiws']
 
             self.types = {}

@@ -88,8 +88,10 @@ def respond(message):
             search = tmdb.Search()
             query = search.movie(query=movie)
             print('query', query)
-            first = query.results[0]
-            popularity = first['popularity']
+            first = query['results']
+            print(first)
+            # first = query.results[0]
+            popularity = first['vote_average']
             response = random.choice(phrases.my_score).format(popularity)
             logging.debug('Popularity: {}'.format(popularity))
             logging.debug('{} {} {}'.format(first['title'], first['id'], first['release_date']))
@@ -103,11 +105,15 @@ def respond(message):
             search = tmdb.Search()
             query = search.movie(query=movie)
             print('query', query)
-            first = query.results[0]
+            first = query['results']
+            print(first)
+            # first = query.results[0]
+            print(first['id'])
+            print(type(first['id']))
             tmdb_movie = tmdb.Movies(first['id'])
-            overview = tmdb_movie.info()['overview']
-            response = random.choice(phrases.my_recommendation).format(overview)
-            logging.debug('Overview: {}'.format(response['overview']))
+            # overview = tmdb_movie.info()['overview']
+            response = random.choice(phrases.my_recommendation).format(tmdb_movie.recommendations())
+            # logging.debug('Overview: {}'.format(response['overview']))
             logging.debug('Other films: {}'.format(tmdb_movie.recommendations()))
 
     else:
