@@ -61,5 +61,5 @@ Below are some examples of successful and less successful queries to the bot.
 ![Example 3](images/example3.jpg)
 ![Example 4](images/example4.jpg)
 ![Example 5](images/example5.jpg)
-![Example 6](images/example6.jpg)
-![Example 7](images/example7.jpg)
+![Example 6](images/Example6.jpg)
+![Example 7](images/Example7.jpg)
