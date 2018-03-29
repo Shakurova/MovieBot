@@ -1,4 +1,13 @@
-amazon_movies.txt
-*.gz
-amazon_movies.txt.gz
-*.json
+.idea/
+clinton-trump-corpus/
+pres-speech/bharrison/bharrison_speeches_000.txt
+pres-speech/arthur/arthur_speeches_010.txt
+pres-speech/
+telegram.py
+read_amazon_reviews.py
+test.txt
+markov_norder.py
+.DS_Store
+.gitignore
+Chatbot instructions.pdf
+*.pyc
