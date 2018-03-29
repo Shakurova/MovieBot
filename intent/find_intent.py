@@ -47,6 +47,10 @@ class IntentFinder():
         message_vec = self.makeFeatureVec(message.split(), self.model, self.model.vector_size)  # do normalization of input vector?
         intent_scores = {}
 
+        # Either gibberish or empty value because of normalization/sanitization of stop words etc
+        if any(np.isnan(message_vec)):
+            return False
+
         # for each intent
         for intent_name in self.types:
             intent_score = 0
@@ -57,16 +61,16 @@ class IntentFinder():
                 # print(self.types[intent_name], message, score)
                 # increase intent score if smaller than 0.7
                 if float(score) < treshold_distance:
-                    intent_score += 1    # do normalization by length  # do normalization by length  # do normalization by length  # do normalization by length
-            intent_scores[intent_name] = intent_score
+                    intent_score += 1
+            intent_scores[intent_name] = 1 - intent_score / len(self.types_vectors[intent_name]) #normalize
 
         for i in intent_scores:
             print(i, intent_scores[i])
 
         # choose intent with the highest score
         # if too small - sorry, could you rephrase
-        if max(intent_scores, key=intent_scores.get) > 2:
-            return max(intent_scores, key=intent_scores.get)
+        if min(intent_scores.values()) < treshold_distance:
+            return min(intent_scores, key=intent_scores.get)
         return False
 
     def makeFeatureVec(self, words, model, num_features):

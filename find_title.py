@@ -28,8 +28,8 @@ def find_title(text, movie_names):
 
 if __name__ == '__main__':
 
-    movie_names = open('movie_names.txt', 'r').read().split('\n')
-    movie_db = ujson.load(open('nice_amazon2.json', 'r'))
+    movie_names = open('D:/Data/Amazon reviews/movie_names_lower.txt', 'r').read().split('\n')
+    movie_db = ujson.load(open('D:/Data/Amazon reviews/nice_amazon2_lower.json', 'r'))
 
     input = ['Hi! Can you give me a review of Disappeared', 'Hi! Can you give me a review of Diasppeared', 'What was the score of La Bamba?', 'What was the score of Bamba?',
              'Can you recommend me something like Full House movie?']
