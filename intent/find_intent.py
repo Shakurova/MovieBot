@@ -13,8 +13,7 @@ class IntentFinder():
             their_greetings = ['hi', 'hello', 'good morning']
             their_goodbyes = ['goodbye', 'bye', 'good-bye', 'see you later', 'cya']
             their_score = ['score', 'rating', 'grade', 'average', 'socre', 'ratings', 'averge', 'avearge']
-            their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise',
-                                    'reccomend']
+            their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise','reccomend']
             their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 'veiws']
 
             self.types = {}
@@ -44,30 +43,35 @@ class IntentFinder():
 
     def model_distance(self, message, treshold_distance=0.7):
         """ Takes message as input and returns the most probable intent type. """
-        message_vec = self.makeFeatureVec(message.split(), self.model, self.model.vector_size)  # do normalization of input vector?
-        intent_scores = {}
+        if message == '':
+            return False
+        else:
+            message_vec = self.makeFeatureVec(message.split(), self.model, self.model.vector_size)  # do normalization of input vector?
+            intent_scores = {}
 
-        # for each intent
-        for intent_name in self.types:
-            intent_score = 0
-            # for each example intent
-            for intent_vector in self.types_vectors[intent_name]:
-                # calculate the distance between the message and example intent
-                score = 1 - cosine_similarity(message_vec.reshape(1, -1), intent_vector.reshape(1, -1))
-                # print(self.types[intent_name], message, score)
-                # increase intent score if smaller than 0.7
-                if float(score) < treshold_distance:
-                    intent_score += 1    # do normalization by length  # do normalization by length  # do normalization by length  # do normalization by length
-            intent_scores[intent_name] = intent_score
+            # for each intent
+            for intent_name in self.types:
+                intent_score = 0
+                # for each example intent
+                for intent_vector in self.types_vectors[intent_name]:
+                    # calculate the distance between the message and example intent
+                    score = 1 - cosine_similarity(message_vec.reshape(1, -1), intent_vector.reshape(1, -1))
+                    print(score)
+                    # print(self.types[intent_name], message, score)
+                    # increase intent score if smaller than 0.7
+                    if float(score) < treshold_distance:
+                        intent_score += 1    # do normalization by length  # do normalization by length  # do normalization by length  # do normalization by length
+                intent_scores[intent_name] = intent_score / len(self.types_vectors[intent_name]) ####
 
-        for i in intent_scores:
-            print(i, intent_scores[i])
+            for i in intent_scores:
+                print(i, intent_scores[i])
 
-        # choose intent with the highest score
-        # if too small - sorry, could you rephrase
-        if max(intent_scores, key=intent_scores.get) > 2:
-            return max(intent_scores, key=intent_scores.get)
-        return False
+            # choose intent with the highest score
+            # if too small - sorry, could you rephrase
+            print(max(intent_scores, key=intent_scores.get))
+            if intent_scores[max(intent_scores, key=intent_scores.get)] > 0.2:
+                return max(intent_scores, key=intent_scores.get)
+            return False
 
     def makeFeatureVec(self, words, model, num_features):
         # Function to average all of the word vectors in a given

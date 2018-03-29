@@ -32,7 +32,6 @@ if __name__ == '__main__':
 
     messages = ['Give me score for full house movie', 'Bye', 'Hello!', '']
 
-
     # Normalize text
     clean_text = normalize(message)  # for intent
     print('Clean text', clean_text)
@@ -81,7 +80,6 @@ if __name__ == '__main__':
                 response = movie.info()
                 print('Overview', response['overview'])
                 print('Other films', movie.recommendations())
-
 
 # Todo:
 # create a button '\info' and add info about our bot
