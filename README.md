@@ -6,7 +6,7 @@ We used [Python Telegram bot API](https://github.com/python-telegram-bot/python-
 
 ## Chat bot abilities
 Our chatbot can handle greetings and goodbyes and can give an introduction of its abilities. The bot lists its abilities with /info command.
-Our chatbot can manage three types of domain specific questions: give movie score, give a random review or recommend a similar movie.
+It can manage three types of domain specific questions: give movie score, give a random review or recommend a similar movie.
 
 
 # How does it work?
