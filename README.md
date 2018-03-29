@@ -17,6 +17,8 @@ Amazon movie reviews dataset contains product id, reviewer id, reviewer profile 
 To map the movie name with product id we wrote a crawler for [amazon website](https://www.amazon.com/product-reviews/).
 
 We enlarged the keyword vocabulary using **word2vec most similar words** and included some **misspellings** because they often occur in chats:
+
+We tried both keyword and keyphrase matching and found keyphrases to be superior. Examples of both:
 ```
 their_greetings = ['hi', 'hello', 'good morning']
 their_goodbyes = ['goodbye', 'bye', 'good-bye', 'see you later', 'cya']
@@ -24,7 +26,17 @@ their_score = ['score', 'rating', 'grade', 'average', 'socre', 'ratings', 'averg
 their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise', 'reccomend']
 their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 'veiws']
 ```
-
+```
+recommendation = ['Could you recommend me a movie similar to movie?',
+                  'Do you have any suggestions for me?', 'Do you have any recommendations?',
+                  'Can you advise me a movie?', 'I need your advice', 'Do you have any recommendations for this movie?',
+                  'Do you know any movie similar to this?', 'Do you know something similar to this movie?', 'What would you recommend?',
+                  'What could you recommend?', 'Which film could you recommend me?']
+score = ['What is the movie rating?', 'What is the movie score?', 'How was the movie scored?']
+review = ['What is your opinion on this movie?', 'What is your impression?', 'What do you think about the movie?',
+          'What is your point of view on this movie?', 'Can you give me a movie review?', 'Could you give me the review?',
+          'Could you share the review for this film?']
+```
 ## Intent detection
 
 Before we do text preprocessing, we remove stop words, punctuation marks and lowercase the words.
@@ -48,3 +60,4 @@ Below are some examples of successful and less successful queries to the bot.
 ![Example 4](images/example4.jpg)
 ![Example 5](images/example5.jpg)
 ![Example 6](images/example6.jpg)
+![Example 7](images/example7.jpg)
