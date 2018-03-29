@@ -83,13 +83,12 @@ def respond(message):
             response = "I do not know about that movie."
         else:
             print('Score')
-            print('movie', movie)
+            # print('movie', movie)
             logging.debug('Score:')
             search = tmdb.Search()
             query = search.movie(query=movie)
-            print('query', query)
-            first = query['results']
-            print(first)
+            # print('query', query)
+            first = query['results'][0]
             # first = query.results[0]
             popularity = first['vote_average']
             response = random.choice(phrases.my_score).format(popularity)
@@ -100,22 +99,18 @@ def respond(message):
         if not movie:
             response = "Sorry, I do not know about that movie."
         else:
-            print('movie', movie)
+            # print('movie', movie)
             logging.debug('Recommendation:')
             search = tmdb.Search()
             query = search.movie(query=movie)
-            print('query', query)
-            first = query['results']
-            print(first)
-            # first = query.results[0]
-            print(first['id'])
-            print(type(first['id']))
+            # print('query', query)
+            first = query['results'][0]
             tmdb_movie = tmdb.Movies(first['id'])
-            # overview = tmdb_movie.info()['overview']
-            response = random.choice(phrases.my_recommendation).format(tmdb_movie.recommendations())
-            # logging.debug('Overview: {}'.format(response['overview']))
-            logging.debug('Other films: {}'.format(tmdb_movie.recommendations()))
-
+            if tmdb_movie.recommendations()['total_results'] != 0:
+                response = random.choice(phrases.my_recommendation).format(tmdb_movie.recommendations())
+                logging.debug('Other films: {}'.format(tmdb_movie.recommendations()))
+            else:
+                response = "Sorry, I don't have recommendations for this movie"
     else:
         response = random.choice(phrases.my_confusion)
 
@@ -125,3 +120,5 @@ if __name__ == '__main__':
      bot.polling(none_stop=True)
 
 # todo: text normalisation
+# remove stopwords for keyword approach
+# keep stopwords for phrases approach
