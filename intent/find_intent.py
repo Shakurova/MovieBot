@@ -65,7 +65,9 @@ class IntentFinder():
 
         # choose intent with the highest score
         # if too small - sorry, could you rephrase
-        return max(intent_scores, key=intent_scores.get)
+        if max(intent_scores, key=intent_scores.get) > 2:
+            return max(intent_scores, key=intent_scores.get)
+        return False
 
     def makeFeatureVec(self, words, model, num_features):
         # Function to average all of the word vectors in a given

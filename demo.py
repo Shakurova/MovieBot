@@ -30,9 +30,8 @@ if __name__ == '__main__':
 
     message = 'Give me score for full house movie'
 
-    # Movie title extractor
-    movie = find_title(message, movie_names)
-    print('Extracted movie', movie)
+    messages = ['Give me score for full house movie', 'Bye', 'Hello!', '']
+
 
     # Normalize text
     clean_text = normalize(message)  # for intent
@@ -42,37 +41,46 @@ if __name__ == '__main__':
     extracted_intent = intent_finder.model_distance(clean_text)
     print('Calculated intent', extracted_intent)
 
-    if extracted_intent == 'greetings':
-        print(phrases.their_greetings)
-
-    elif extracted_intent == 'goodbyes':
-        print(phrases.their_goodbyes)
-
-    elif extracted_intent == 'review':
-        print('Review:')
-        print(movie_db[movie]['review'][0])
-
-    elif extracted_intent == 'score':
-        print('Score:')
-        search = tmdb.Search()
-        response = search.movie(query=movie)
-        first = search.results[0]
-        print('Popularity:', first['popularity'])
-        print(first['title'], first['id'], first['release_date'])
-
-    elif extracted_intent == 'recommendation':
-        print('Recommendation:')
-        search = tmdb.Search()
-        response = search.movie(query=movie)
-        first = search.results[0]
-
-        movie = tmdb.Movies(first['id'])
-        response = movie.info()
-        print('Overview', response['overview'])
-        print('Other films', movie.recommendations())
+    if not extracted_intent:
+        print('Sorry, could you rephrase')
 
     else:
-        print('Sorry, could you rephrase please')
+        # Movie title extractor
+        movie = find_title(message, movie_names)
+        print('Extracted movie', movie)
+
+        if movie == "Such a movie wasn't found":
+            print("Such a movie wasn't found")
+
+        else:
+            if extracted_intent == 'greetings':
+                print(phrases.their_greetings)
+
+            elif extracted_intent == 'goodbyes':
+                print(phrases.their_goodbyes)
+
+            elif extracted_intent == 'review':
+                print('Review:')
+                print(movie_db[movie]['review'][0])
+
+            elif extracted_intent == 'score':
+                print('Score:')
+                search = tmdb.Search()
+                response = search.movie(query=movie)
+                first = search.results[0]
+                print('Popularity:', first['popularity'])
+                print(first['title'], first['id'], first['release_date'])
+
+            elif extracted_intent == 'recommendation':
+                print('Recommendation:')
+                search = tmdb.Search()
+                response = search.movie(query=movie)
+                first = search.results[0]
+
+                movie = tmdb.Movies(first['id'])
+                response = movie.info()
+                print('Overview', response['overview'])
+                print('Other films', movie.recommendations())
 
 
 # Todo:
