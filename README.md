@@ -16,6 +16,13 @@ The chatbot uses [Amazon movie reviews dataset](https://snap.stanford.edu/data/w
 Amazon movie reviews dataset contains product id, reviewer id, reviewer profile name, review helpfulness and score metrics, review summary and review text.
 To map the movie name with product id we wrote a crawler for [amazon website](https://www.amazon.com/product-reviews/).
 
+
+## Intent detection
+
+Before we do text preprocessing, we remove stop words, punctuation marks and lowercase the words.
+
+We predefined search queries for each of the intents (recommendation, review, score, greetings, goodbyes) and for each of user question we measure the **semantic distance between word2vec vectors - one from an intent keyword and the other from input message**.
+
 We enlarged the keyword vocabulary using **word2vec most similar words** and included some **misspellings** because they often occur in chats:
 
 We tried both keyword and keyphrase matching and found keyphrases to be superior. Examples of both:
@@ -37,11 +44,6 @@ review = ['What is your opinion on this movie?', 'What is your impression?', 'Wh
           'What is your point of view on this movie?', 'Can you give me a movie review?', 'Could you give me the review?',
           'Could you share the review for this film?']
 ```
-## Intent detection
-
-Before we do text preprocessing, we remove stop words, punctuation marks and lowercase the words.
-
-We predefined search queries for each of the intents (recommendation, review, score, greetings, goodbyes) and for each of user question we measure the **semantic distance between word2vec vectors - one from an intent keyword and the other from input message**.
 
 The better way to do intent detection would be training ML models on a big dataset but we didn't have access to one (or resources to train it).
 
