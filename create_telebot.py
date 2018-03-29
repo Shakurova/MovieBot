@@ -71,6 +71,9 @@ def respond(message):
     elif extracted_intent == 'goodbyes':
         response = random.choice(phrases.my_goodbyes)
 
+    elif extracted_intent == 'howareyou':
+        response = random.choice(phrases.my_howareyou)
+
     elif extracted_intent == 'review':
         if not movie:
             response = "I do not know about that movie."
@@ -106,9 +109,12 @@ def respond(message):
             # print('query', query)
             first = query['results'][0]
             tmdb_movie = tmdb.Movies(first['id'])
+            print(tmdb_movie)
             if tmdb_movie.recommendations()['total_results'] != 0:
-                response = random.choice(phrases.my_recommendation).format(tmdb_movie.recommendations())
-                logging.debug('Other films: {}'.format(tmdb_movie.recommendations()))
+                print(random.choice(phrases.my_recommendation).format(tmdb_movie.recommendations()))
+                print(random.choice(tmdb_movie.recommendations()['results'])['title'])
+                response = random.choice(phrases.my_recommendation).format(random.choice(tmdb_movie.recommendations()['results'])['title'])
+                logging.debug('Other films: {}'.format(random.choice(tmdb_movie.recommendations()['results'])['title']))
             else:
                 response = "Sorry, I don't have recommendations for this movie"
     else:
