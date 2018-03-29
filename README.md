@@ -42,6 +42,7 @@ This approach allows us not only to look up the full titles but also take into a
 ## Demo
 Below are some examples of successful and less successful queries to the bot.
 
-![Example 1](images/example1.jpg)
-![Example 2](images/example2.jpg)
-![Example 3](images/example3.jpg)
+![Example 1](images/example1.jpg =800x600)
+![Example 2](images/example2.jpg =800x600)
+![Example 3](images/example3.jpg =800x600)
+![Example 4](images/example4.jpg =800x600)
