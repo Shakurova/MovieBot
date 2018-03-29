@@ -1,45 +1,58 @@
 # -*- coding: utf-8 -*-
-import logging
+
 import random
 import ujson
-
+import sys
 import telebot
-import tmdbsimple as tmdb
+from telebot import types
 from gensim.models import KeyedVectors
-from telebot.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton
 
-import telegram
 from find_title import find_title
 from intent import phrases
 from intent.find_intent import IntentFinder
+from intent.phrases import questions_answers
 from normalization import normalize
 
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG)
+from config import telebot_config, tmdb_config
 
-# Configuration - replace these with your values
-TELEBOT_API_KEY = '564436346:AAHNnOHgYONKDixXfRVg8j3pGdNFoaf9IA4'
-tmdb.API_KEY = '63d059aa35be3c4f80368d5a192cfe26'
-MOVIE_NAMES_FILE = 'D:/Data/Amazon reviews/movie_names_lower.txt'
-AMAZON_REVIEWS_FILE = 'D:/Data/Amazon reviews/nice_amazon2_lower.json'
-WORD2VEC_MODEL_FILE = 'D:/Data/word2vec/GoogleNews-vectors-negative300.bin'
+import tmdbsimple as tmdb
+import ujson
 
-movie_names = open(MOVIE_NAMES_FILE, 'r').read().split('\n')
-movie_db = ujson.load(open(AMAZON_REVIEWS_FILE, 'r'))
-model = KeyedVectors.load_word2vec_format('%s' % WORD2VEC_MODEL_FILE, binary=True)
+import logging
+
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+
+bot = telebot.TeleBot(telebot_config)
+
+tmdb.API_KEY = tmdb_config
+search = tmdb.Search()
+
+movie_names_file = './intent/movie_names_lower.txt'
+movie_names = open(movie_names_file, 'r').read().split('\n')
+movie_db = ujson.load(open('./intent/nice_amazon2_lower.json', 'r'))
+
+model = KeyedVectors.load_word2vec_format('../wg3-semantic_space_models/GoogleNews-vectors-negative300.bin', binary=True)
 intent_finder = IntentFinder(model)
-bot = telebot.TeleBot(TELEBOT_API_KEY)
-print("Bot started.")
-features_button_label = 'What can I do?'
+
+markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+markup.row('/info')
+
+print("Bot started")
+
+
+@bot.message_handler(commands=['start'])
+def send_message(message):
+    bot.send_message(message.chat.id, "You can ask me about your favorite movie review score, recommendations for other movies or a sample review!", reply_markup=markup)
+
+
+@bot.message_handler(commands=['info'])
+def send_message(message):
+    bot.send_message(message.chat.id, "You can ask me about your favorite movie review score, recommendations for other movies or a sample review!", reply_markup=markup)
 
 
 @bot.message_handler(content_types=["text"])
 def respond(message):
     text = message.text
-
-    if text == features_button_label:
-        bot.send_message(message.chat.id,
-                         "You can ask me about your favorite movie review score, recommendations for other movies or a sample review!")
-        return
 
     movie = find_title(text, movie_names)
     logging.debug('Extracted movie: {}'.format(movie))
@@ -52,53 +65,60 @@ def respond(message):
     extracted_intent = intent_finder.model_distance(clean_text)
     logging.debug('Calculated intent: {}'.format(extracted_intent))
     response = None
-    markup = None
     if extracted_intent == 'greetings':
-        kb = [[InlineKeyboardButton(features_button_label, callback_data='/features')]]
-        markup = ReplyKeyboardMarkup(kb)
-        response = random.choice(phrases.their_greetings)
+        response = random.choice(phrases.my_greetings)
 
     elif extracted_intent == 'goodbyes':
-        response = random.choice(phrases.their_goodbyes)
+        response = random.choice(phrases.my_goodbyes)
 
     elif extracted_intent == 'review':
-        if movie == None:
+        if not movie:
             response = "I do not know about that movie."
         else:
-            response = movie_db[movie]['review'][0]
+            print('Review')
+            response = random.choice(movie_db[movie]['review'])[2]
 
     elif extracted_intent == 'score':
-        if movie == None:
+        if not movie:
             response = "I do not know about that movie."
         else:
+            print('Score')
+            # print('movie', movie)
             logging.debug('Score:')
             search = tmdb.Search()
             query = search.movie(query=movie)
-            first = query.results[0]
-            popularity = first['popularity']
+            # print('query', query)
+            first = query['results'][0]
+            # first = query.results[0]
+            popularity = first['vote_average']
             response = random.choice(phrases.my_score).format(popularity)
             logging.debug('Popularity: {}'.format(popularity))
             logging.debug('{} {} {}'.format(first['title'], first['id'], first['release_date']))
 
     elif extracted_intent == 'recommendation':
-        if movie == None:
-            response = "I do not know about that movie."
+        if not movie:
+            response = "Sorry, I do not know about that movie."
         else:
+            # print('movie', movie)
             logging.debug('Recommendation:')
             search = tmdb.Search()
             query = search.movie(query=movie)
-            first = query.results[0]
-            movie = tmdb.Movies(first['id'])
-            overview = movie.info()['overview']
-            response = random.choice(phrases.my_recommendation).format(overview)
-            logging.debug('Overview: {}'.format(response['overview']))
-            logging.debug('Other films: {}'.format(movie.recommendations()))
-
+            # print('query', query)
+            first = query['results'][0]
+            tmdb_movie = tmdb.Movies(first['id'])
+            if tmdb_movie.recommendations()['total_results'] != 0:
+                response = random.choice(phrases.my_recommendation).format(tmdb_movie.recommendations())
+                logging.debug('Other films: {}'.format(tmdb_movie.recommendations()))
+            else:
+                response = "Sorry, I don't have recommendations for this movie"
     else:
         response = random.choice(phrases.my_confusion)
 
-    bot.send_message(message.chat.id, response, reply_markup=markup)
-
+    bot.send_message(message.chat.id, response)
 
 if __name__ == '__main__':
      bot.polling(none_stop=True)
+
+# todo: text normalisation
+# remove stopwords for keyword approach
+# keep stopwords for phrases approach

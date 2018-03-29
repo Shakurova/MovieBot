@@ -2,12 +2,16 @@
 
 import string
 import re
+import ujson
 
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
-from stop_words import get_stop_words
-english_stopwords = get_stop_words('en')
+# from stop_words import get_stop_words
+# english_stopwords = get_stop_words('en')
+# print(english_stopwords)
+# ujson.dump(english_stopwords,  open('stopwords.json', 'w'))
+english_stopwords = ujson.load(open('stopwords.json'))
 
 LETTERS = string.ascii_lowercase
 wordnet_lemmatizer = WordNetLemmatizer()
