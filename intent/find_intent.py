@@ -7,61 +7,86 @@ from normalization import normalize
 
 
 class IntentFinder():
-    def __init__(self, questions_answers, model=None):
-        self.questions_answers = questions_answers
+    def __init__(self, model=None):
         if model != None:
             self.model = model
-            self.intent_vectors = self.getAvgFeatureVecs([x[0] for x in self.questions_answers], self.model, self.model.vector_size)
+            their_greetings = ['hi', 'hello', 'good morning']
+            their_goodbyes = ['goodbye', 'bye', 'good-bye', 'see you later', 'cya']
+            their_score = ['score', 'rating', 'grade', 'average', 'socre', 'ratings', 'averge', 'avearge']
+            their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise',
+                                    'reccomend']
+            their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 'veiws']
 
-    def find_intent_answers(self, message):
-        if self.model != None:
-            return self.model_distance(message)
-        else:
-            return self.nr_of_similar_words_score(message)
+            self.types = {}
+            self.types['greetings'] = their_greetings
+            self.types['goodbyes'] = their_goodbyes
+            self.types['score'] = their_score
+            self.types['recommendation'] = their_recommendation
+            self.types['review'] = their_review
 
-    def nr_of_similar_words_score(self, message):
-        text = message.split()
-        # We substract to make lower scores better, because other (distance) metrics work like that
-        return len(text) - sum(text.count(m) for m in self.questions_answers[1])
+            # create vectors
+            self.types_vectors = self.get_vectors(self.types)
 
-    def model_distance(self, message, treshold_distance=0.8):
-        message_vec = self.makeFeatureVec(message.split(), self.model, self.model.vector_size)
-        best_score = sys.maxsize
-        best_score_index = None
-        if not any(np.isnan(message_vec)):
-            for i in range(len(self.intent_vectors)):
-                intent_vector = self.intent_vectors[i]
-                # We substract to make lower scores better, because other (distance) metrics work like that
+    def get_vectors(self, train):
+        """ Creates dictionary of vectors for each intent. """
+        vectors = {}
+        for k in train:
+            clean_train_reviews = []
+            for review in train[k]:
+                clean_train_reviews.append(normalize(review).split())
+
+            # print(clean_train_reviews)
+            trainDataVecs = self.getAvgFeatureVecs(clean_train_reviews, self.model, self.model.vector_size)
+
+            # print(trainDataVecs)
+            vectors[k] = trainDataVecs
+        return vectors
+
+    def model_distance(self, message, treshold_distance=0.7):
+        """ Takes message as input and returns the most probable intent type. """
+        message_vec = self.makeFeatureVec(message.split(), self.model, self.model.vector_size)  # do normalization of input vector?
+        intent_scores = {}
+
+        # for each intent
+        for intent_name in self.types:
+            intent_score = 0
+            # for each example intent
+            for intent_vector in self.types_vectors[intent_name]:
+                # calculate the distance between the message and example intent
                 score = 1 - cosine_similarity(message_vec.reshape(1, -1), intent_vector.reshape(1, -1))
-                if score < best_score:
-                    best_score = score
-                    best_score_index = i
-                print("Model distance between '{}' and {}: {}".format(message, phrases.questions_answers[i][0], score))
+                # print(self.types[intent_name], message, score)
+                # increase intent score if smaller than 0.7
+                if float(score) < treshold_distance:
+                    intent_score += 1    # do normalization by length  # do normalization by length  # do normalization by length  # do normalization by length
+            intent_scores[intent_name] = intent_score
 
-            return self.questions_answers[best_score_index][1] if best_score < treshold_distance else None
-        else:
-            return None
+        for i in intent_scores:
+            print(i, intent_scores[i])
+
+        # choose intent with the highest score
+        # if too small - sorry, could you rephrase
+        return max(intent_scores, key=intent_scores.get)
 
     def makeFeatureVec(self, words, model, num_features):
         # Function to average all of the word vectors in a given
         # paragraph
-        #
+
         # Pre-initialize an empty numpy array (for speed)
         featureVec = np.zeros((num_features,), dtype="float32")
-        #
-        nwords = 0.
-        #
+
+        nwords = 0
+
         # Index2word is a list that contains the names of the words in
         # the model's vocabulary. Convert it to a set, for speed
         index2word_set = set(model.index2word)
-        #
+
         # Loop over each word in the review and, if it is in the model's
         # vocaublary, add its feature vector to the total
         for word in words:
             if word in index2word_set:
-                nwords = nwords + 1.
+                nwords = nwords + 1
                 featureVec = np.add(featureVec, model[word])
-        #
+
         # Divide the result by the number of words to get the average
         featureVec = np.divide(featureVec, nwords)
         return featureVec
@@ -69,24 +94,23 @@ class IntentFinder():
     def getAvgFeatureVecs(self, message, model, num_features):
         # Given a set of reviews (each one a list of words), calculate
         # the average feature vector for each one and return a 2D numpy array
-        #
+
         # Initialize a counter
         counter = 0
-        #
+
         # Preallocate a 2D numpy array, for speed
         reviewFeatureVecs = np.zeros((len(message), num_features), dtype="float32")
-        #
+
         # Loop through the reviews
         for review in message:
-            #
+
             # Print a status message every 1000th review
-            if counter % 1000. == 0.:
-                print
-                "Review %d of %d" % (counter, len(message))
-            #
+            if counter % 1000 == 0:
+                print("Review %d of %d" % (counter, len(message)))
+
             # Call the function (defined above) that makes average feature vectors
             reviewFeatureVecs[counter] = self.makeFeatureVec(review, model, num_features)
-            #
+
             # Increment the counter
             counter = counter + 1
         return reviewFeatureVecs
