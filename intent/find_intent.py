@@ -12,13 +12,23 @@ class IntentFinder():
             self.model = model
             their_greetings = ['hi', 'hello', 'good morning']
             their_goodbyes = ['goodbye', 'bye', 'good-bye', 'see you later', 'cya']
-            their_score = ['score', 'rating', 'grade', 'average', 'socre', 'ratings', 'averge', 'avearge']
-            their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise','reccomend', 'similar']
-            their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 'veiws']
+            their_howareyou = ['How are you?', 'How are you doing?', 'Whats up?']
+            # their_score = ['score', 'rating', 'grade', 'average', 'socre', 'ratings', 'averge', 'avearge']
+            # their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise','reccomend', 'similar']
+            # their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 'veiws']
+
+            their_recommendation = ['Could you recommend me a movie similar to movie?', 'Do you have any suggestions for me?',
+                              'Do you have any recommendations?',
+                              'Can you advise me a movie?', 'I need your advice']
+            their_score = ['What is the movie rating?', 'What is the movie score?', 'How was the movie scored?']
+            their_review = ['What is your opinion on this movie?', 'What is your impression?',
+                      'What do you think about the movie?',
+                      'What is your point of view on this movie?', 'Can you give me a movie review?']
 
             self.types = {}
             self.types['greetings'] = their_greetings
             self.types['goodbyes'] = their_goodbyes
+            self.types['howareyou'] = their_howareyou
             self.types['score'] = their_score
             self.types['recommendation'] = their_recommendation
             self.types['review'] = their_review
