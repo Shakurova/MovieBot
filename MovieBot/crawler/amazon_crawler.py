@@ -12,8 +12,6 @@ from scrapy.http import Request, HtmlResponse
 from middleware import RotateUserAgentMiddleware
 from bs4 import BeautifulSoup
 
-# scrapy runspider -o results.json -t json
-
 class RiaSpider(scrapy.Spider):
 
     domain = 'https://www.amazon.com'
@@ -46,9 +44,6 @@ class RiaSpider(scrapy.Spider):
 
     start = 0
 
-
-
-    # Методы парсинга
     def start_requests(self):
         start = self.start + 1
         for start_url in self.start_urls:
@@ -62,17 +57,10 @@ class RiaSpider(scrapy.Spider):
 
     def parse_news_page(self, response):
         event_title = response.css('title ::text').extract()
-        # print(event_title)
-        # self.lookup.write(str(event_title) + '\n')
-        # self.lookup.write(str(event_title) + '\n')
 
         event_data = {
             'event_title': event_title,
             'event_url': response.url,
         }
-
-        # print(event_data)
-        # with codecs.open('lookup2.txt', 'a', 'utf-8') as w:
-        #     w.write(str(event_data) + '\n')
 
         yield event_data

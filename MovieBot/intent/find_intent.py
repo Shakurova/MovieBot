@@ -2,8 +2,8 @@ import numpy as np
 import sys
 from sklearn.metrics.pairwise import cosine_similarity
 
-from intent import phrases
-from normalization import normalize
+from MovieBot.intent import phrases
+from MovieBot.utils.normalization import normalize
 
 
 class IntentFinder():
@@ -13,9 +13,6 @@ class IntentFinder():
             their_greetings = ['hi', 'hello', 'good morning']
             their_goodbyes = ['goodbye', 'bye', 'good-bye', 'see you later', 'cya']
             their_howareyou = ['How are you?', 'How are you doing?', 'Whats up?']
-            # their_score = ['score', 'rating', 'grade', 'average', 'socre', 'ratings', 'averge', 'avearge']
-            # their_recommendation = ['recommend', 'recommendation', 'suggest', 'suggestion', 'propose', 'advise','reccomend', 'similar']
-            # their_review = ['review', 'opinion', 'impression', 'view', 'think', 'opionion', 'veiws']
 
             their_recommendation = ['Could you recommend me a movie similar to movie?', 'Do you have any suggestions for me?',
                               'Do you have any recommendations?',
@@ -33,7 +30,7 @@ class IntentFinder():
             self.types['recommendation'] = their_recommendation
             self.types['review'] = their_review
 
-            # create vectors
+            # Create vectors
             self.types_vectors = self.get_vectors(self.types)
 
     def get_vectors(self, train):
@@ -44,10 +41,8 @@ class IntentFinder():
             for review in train[k]:
                 clean_train_reviews.append(normalize(review).split())
 
-            # print(clean_train_reviews)
             trainDataVecs = self.getAvgFeatureVecs(clean_train_reviews, self.model, self.model.vector_size)
 
-            # print(trainDataVecs)
             vectors[k] = trainDataVecs
         return vectors
 
@@ -59,25 +54,25 @@ class IntentFinder():
             message_vec = self.makeFeatureVec(message.split(), self.model, self.model.vector_size)  # do normalization of input vector?
             intent_scores = {}
 
-            # for each intent
+            # For each intent
             for intent_name in self.types:
                 intent_score = 0
-                # for each example intent
+                # For each example intent
                 for intent_vector in self.types_vectors[intent_name]:
-                    # calculate the distance between the message and example intent
+                    # Calculate the distance between the message and example intent
                     score = 1 - cosine_similarity(message_vec.reshape(1, -1), intent_vector.reshape(1, -1))
                     print(score)
-                    # print(self.types[intent_name], message, score)
+
                     # increase intent score if smaller than 0.7
                     if float(score) < treshold_distance:
-                        intent_score += 1    # do normalization by length  # do normalization by length  # do normalization by length  # do normalization by length
-                intent_scores[intent_name] = intent_score / len(self.types_vectors[intent_name]) ####
+                        intent_score += 1    # do normalization by length
+                intent_scores[intent_name] = intent_score / len(self.types_vectors[intent_name])
 
             for i in intent_scores:
                 print(i, intent_scores[i])
 
-            # choose intent with the highest score
-            # if too small - sorry, could you rephrase
+            # Choose intent with the highest score
+            # If the score is too small - ask the user to rephrase the query
             print(max(intent_scores, key=intent_scores.get))
             if intent_scores[max(intent_scores, key=intent_scores.get)] > 0.2:
                 return max(intent_scores, key=intent_scores.get)

@@ -16,7 +16,6 @@ The chatbot uses [Amazon movie reviews dataset](https://snap.stanford.edu/data/w
 Amazon movie reviews dataset contains product id, reviewer id, reviewer profile name, review helpfulness and score metrics, review summary and review text.
 To map the movie name with product id we wrote a crawler for [amazon website](https://www.amazon.com/product-reviews/).
 
-
 ## Intent detection
 
 Before we do text preprocessing, we remove stop words, punctuation marks and lowercase the words.

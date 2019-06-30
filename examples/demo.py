@@ -6,24 +6,23 @@ from gensim.models import KeyedVectors
 
 import tmdbsimple as tmdb
 
-
-from find_title import find_title
-from intent import phrases
-from intent.find_intent import IntentFinder
-from intent.phrases import questions_answers
-from normalization import normalize
+from MovieBot.find_title import find_title
+from MovieBot.intent import phrases
+from MovieBot.intent.find_intent import IntentFinder
+from MovieBot.intent.phrases import questions_answers
+from MovieBot.utils.normalization import normalize
+from MovieBot.config import telebot_config, tmdb_config
 
 import logging
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-
-tmdb.API_KEY = '63d059aa35be3c4f80368d5a192cfe26'
-movie_names_file = './intent/movie_names_lower.txt'
+tmdb.API_KEY = tmdb_config
+movie_names_file = './MovieBot/data/movie_names.txt'
 movie_names = open(movie_names_file, 'r').read().split('\n')
-movie_db = ujson.load(open('./intent/nice_amazon2_lower.json', 'r'))
+movie_db = ujson.load(open('./MovieBot/data/amazon_movies.json', 'r'))
 
-model = KeyedVectors.load_word2vec_format('../wg3-semantic_space_models/GoogleNews-vectors-negative300.bin', binary=True)
+model = KeyedVectors.load_word2vec_format('./MovieBot/embeddings/GoogleNews-vectors-negative300.bin', binary=True)
 intent_finder = IntentFinder(model)
 
 if __name__ == '__main__':
@@ -80,6 +79,3 @@ if __name__ == '__main__':
                 response = movie.info()
                 print('Overview', response['overview'])
                 print('Other films', movie.recommendations())
-
-# Todo:
-# create a button '\info' and add info about our bot

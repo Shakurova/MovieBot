@@ -4,17 +4,12 @@ import ujson
 
 dictionary = {}
 
-
 def create_dict(arr):
     global dictionary
-    # print('!!!!!!!!', len(arr))
-    # print('????', len(dictionary.keys()))
     for i in '#'.join(arr).split('BREAK'):
         a = [a for a in i.split('#') if a != '']
         if len(a) > 3:
             name = a[0].replace("'", "")
-            # score = a[2].replace("'", "")
-            # helpfulness = a[1].replace("'", "")
             if name not in dictionary:
                 dictionary[name] = {}
                 dictionary[name]['review'] = []
@@ -22,12 +17,8 @@ def create_dict(arr):
             else:
                 dictionary[name]['review'].append((a[1], a[2], a[3]))
 
-    # # for i in dictionary:
-    # #     print(i, dictionary[i])
-
     with open('amazon2.json', 'w') as w:
         ujson.dump(dictionary, w)
-    # return dictionary
 
 
 def amazon_parser(filename='amazon_movies.txt'):
@@ -37,14 +28,8 @@ def amazon_parser(filename='amazon_movies.txt'):
         arr = []
 
         for line in f:
-            # print(line)
-            # line = str(line, 'utf-8')
             count += 1
             if count < 80000000:
-                # if count / 10 == 0:
-                #     print(count)
-                # print(str(line).split(':')[0])
-                # print(str(line).split(':')[0][2::])
                 if line != b"\n":
                     if str(line).split(':')[0][2::] == 'product/productId':
                         arr.append(str(line).replace('\\n', '').split(': ')[1])
@@ -59,7 +44,6 @@ def amazon_parser(filename='amazon_movies.txt'):
                     arr.append('BREAK')
                     if count % 1000 == 0:
                         print(count)
-                        # print('here')
                         create_dict(arr)
             else:
                 break
@@ -68,21 +52,20 @@ def amazon_parser(filename='amazon_movies.txt'):
 
 
 if __name__ == '__main__':
-    # arr = amazon_parser()
-
     # Transform crawled data into a normal format
-    results = ujson.load(open('results2.json'))
+    results = ujson.load(open('amazon_crawled_data.json'))
 
     lookup_dictionary = {}
     for l in results:
         lookup_dictionary[l['event_url'].split('/')[-1]] = l['event_title'][0].split(': ')[2]
 
-    with open('lookup_dictionary2.json', 'w') as w:
+    with open('lookup_dictionary.json', 'w') as w:
         ujson.dump(lookup_dictionary, w)
 
-    print('start with amazon')
-    # transform amazon keys
-    amazon = ujson.load(open('amazon2.json'))
+    print('Start with amazon')
+
+    # Transform amazon keys
+    amazon = ujson.load(open('amazon.json'))
     print(len(amazon.keys()))
 
     nice_amazon = {}
@@ -93,12 +76,11 @@ if __name__ == '__main__':
         else:
             print(k)
 
-    with open('nice_amazon2.json', 'w') as w:
+    with open('clean_amazon.json', 'w') as w:
         ujson.dump(nice_amazon, w)
 
-    nice_amazon2 = ujson.load(open('nice_amazon2.json'))
+    nice_amazon2 = ujson.load(open('clean_amazon.json'))
     print(len(nice_amazon2.keys()))
 
     for k in nice_amazon2:
         print(k)
-

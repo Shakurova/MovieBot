@@ -1,44 +1,46 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import random
 import ujson
-import sys
+
 import telebot
 from telebot import types
+
 from gensim.models import KeyedVectors
 
-from find_title import find_title
-from intent import phrases
-from intent.find_intent import IntentFinder
-from intent.phrases import questions_answers
-from normalization import normalize
-
-from config import telebot_config, tmdb_config
+from MovieBot.find_title import find_title
+from MovieBot.intent import phrases
+from MovieBot.intent.find_intent import IntentFinder
+from MovieBot.intent.phrases import questions_answers
+from MovieBot.utils.normalization import normalize
+from MovieBot.config import telebot_config, tmdb_config
 
 import tmdbsimple as tmdb
-import ujson
 
 import logging
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
+# Set up Telegram bot
 bot = telebot.TeleBot(telebot_config)
-
-tmdb.API_KEY = tmdb_config
-search = tmdb.Search()
-
-movie_names_file = './intent/movie_names_lower.txt'
-movie_names = open(movie_names_file, 'r').read().split('\n')
-movie_db = ujson.load(open('./intent/nice_amazon2_lower.json', 'r'))
-
-model = KeyedVectors.load_word2vec_format('../wg3-semantic_space_models/GoogleNews-vectors-negative300.bin', binary=True)
-intent_finder = IntentFinder(model)
-
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 markup.row('/info')
 
-print("Bot started")
+# Set up tmdb
+tmdb.API_KEY = tmdb_config
+search = tmdb.Search()
 
+# Load data
+movie_names = open('./MovieBot/data/movie_names.txt', 'r').read().split('\n')
+movie_db = ujson.load(open('./MovieBot/data/amazon_movies.json', 'r'))
+
+# Load embeddings
+model = KeyedVectors.load_word2vec_format('./MovieBot/embeddings/GoogleNews-vectors-negative300.bin', binary=True)
+
+intent_finder = IntentFinder(model)
+
+print("Bot started")
 
 @bot.message_handler(commands=['start'])
 def send_message(message):
@@ -86,13 +88,13 @@ def respond(message):
             response = "I do not know about that movie."
         else:
             print('Score')
-            # print('movie', movie)
+
             logging.debug('Score:')
             search = tmdb.Search()
             query = search.movie(query=movie)
-            # print('query', query)
+
             first = query['results'][0]
-            # first = query.results[0]
+
             popularity = first['vote_average']
             response = random.choice(phrases.my_score).format(popularity)
             logging.debug('Popularity: {}'.format(popularity))
@@ -102,11 +104,9 @@ def respond(message):
         if not movie:
             response = "Sorry, I do not know about that movie."
         else:
-            # print('movie', movie)
             logging.debug('Recommendation:')
             search = tmdb.Search()
             query = search.movie(query=movie)
-            # print('query', query)
             first = query['results'][0]
             tmdb_movie = tmdb.Movies(first['id'])
             print(tmdb_movie)
@@ -124,7 +124,3 @@ def respond(message):
 
 if __name__ == '__main__':
      bot.polling(none_stop=True)
-
-# todo: text normalisation
-# remove stopwords for keyword approach
-# keep stopwords for phrases approach
