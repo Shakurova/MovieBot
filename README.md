@@ -75,10 +75,18 @@ This approach allows us not only to look up the full titles but also take into a
 ## Demo
 Below are some examples of successful and less successful queries to the bot.
 
-![Example 1](images/example1.jpg)
-![Example 2](images/example2.jpg)
-![Example 3](images/example3.jpg)
-![Example 4](images/example4.jpg)
-![Example 5](images/example5.jpg)
-![Example 6](images/Example6.jpg)
-![Example 7](images/Example7.jpg)
+<div align="middle">
+<img src="./images/example1.jpg" width="150">     ....
+<img src="./images/example2.jpg" width="150">     ....
+<img src="./images/example3.jpg" width="150">
+</div>
+<br>
+<div align="middle">
+<img src="./images/example4.jpg" width="250">     ....
+<img src="./images/example5.jpg" width="250">
+</div>
+<br>
+<div align="middle">
+<img src="./images/example6.jpg" width="250">      ....
+<img src="./images/example7.jpg" width="250">
+</div>
