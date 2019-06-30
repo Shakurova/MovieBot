@@ -16,6 +16,26 @@ The chatbot uses [Amazon movie reviews dataset](https://snap.stanford.edu/data/w
 Amazon movie reviews dataset contains product id, reviewer id, reviewer profile name, review helpfulness and score metrics, review summary and review text.
 To map the movie name with product id we wrote a crawler for [amazon website](https://www.amazon.com/product-reviews/).
 
+# How to run the bot?
+
+Get pre-trained word2vec embeddings:
+```
+mkdir MovieBot/embeddings
+cd MovieBot/embeddings
+wget -c "https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors-negative300.bin.gz"
+```
+
+Create config.py in the MovieBot folder and add the following information there:
+```
+telebot_config = 'Your Telegram bot token'
+tmdb_config = 'Your tmdb token'
+```
+
+Start the bot:
+```
+python MovieBot.py
+```
+
 ## Intent detection
 
 Before we do text preprocessing, we remove stop words, punctuation marks and lowercase the words.
