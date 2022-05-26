@@ -26,5 +26,5 @@ six==1.11.0
 sklearn==0.0
 smart-open==1.5.7
 tmdbsimple==2.1.0
-ujson==1.35
+ujson==5.2.0
 urllib3==1.22
